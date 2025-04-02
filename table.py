@@ -1,6 +1,6 @@
 from card import Card, Deck
 
-def table():
+class Table():
     def __init__(self):
         self.cards = []
         self.pot = 0
@@ -18,7 +18,7 @@ def table():
         self.cards.append(card)
     
     def river(self,deck):
-        turn(deck)
+        self.turn(deck)
 
     def reset(self):
         self.cards = []

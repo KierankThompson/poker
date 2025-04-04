@@ -1,4 +1,5 @@
 from card import Deck
+from table import Table
 import random
 import numpy as np
 
@@ -11,8 +12,9 @@ class Player():
     def bet(self,betSize):
         self.money -= betSize
 
-    def winPot(self,potSize):
-        self.money += potSize
+    def winPot(self,table):
+        self.money += table.potsize
+        table.potsize = 0
     
     def getHand(self,deck):
         self.hand = deck.takeOut(2)
@@ -24,7 +26,6 @@ class Player():
 
 class AI(Player):
     
-
     def __init__(self,startingMoney=1000):
         super().__init__(startingMoney)
 

@@ -1,11 +1,12 @@
 from card import Deck
 from table import Table
 import random
-import numpy as np
+import pickle
+from train import *
 
 
 class Player():
-    def __init__(self,startingMoney=1000):
+    def __init__(self,startingMoney=10):
         self.money = startingMoney
         self.hand = []
 
@@ -13,40 +14,34 @@ class Player():
         self.money -= betSize
 
     def winPot(self,table):
-        self.money += table.potsize
-        table.potsize = 0
+        self.money += table.pot
+        table.pot = 0
     
     def getHand(self,deck):
         self.hand = deck.takeOut(2)
 
-    
-    
     def reset(self):
         self.hand = []
 
+
+ACTIONS = ["fold", "call", "bet"]
 class AI(Player):
     
-    def __init__(self,startingMoney=1000):
+    def __init__(self,startingMoney=10, strategy_file="strategy_file.pkl"):
         super().__init__(startingMoney)
+        with open(strategy_file, "rb") as f:
+            self.strategy = pickle.load(f)
+    def decide_action(self, historyString):
+        info_key = historyString
+        if info_key in self.strategy:
+            strategy = self.strategy[info_key].get_average_strategy()
+        else:
+            strategy = [1/3, 1/3, 1/3]  
 
-    def evalPreFlop(self, isBlind = True, curBet = 0):
-        if not self.hand:
-            return 0
-        maxScore = 41 ** 2
-        score = maxScore
-        if (self.hand[0].bit & self.hand[1].bit & 0xf000):
-            score = maxScore
-        else:
-            score = (self.hand[0].bit & 0xff) * (self.hand[1].bit & 0xff)
-        if isBlind:
-            ratio = 1 - (score/maxScore-0.3)
-            rand = random.randrange(1)
-            if ratio > rand:
-                return 5 + min(self.money,int(self.money * np.random.normal(0.1)))
-            else:
-                return 5
-        else:
-            ratio = score/maxScore - 0.1
+        action = random.choices(ACTIONS, weights=strategy)[0]
+        return action
+
+    
             
         
         

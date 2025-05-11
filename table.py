@@ -10,13 +10,13 @@ class Table():
         self.pot += bet
     
     def flop(self,deck):
-        cards = deck.takeout(3)
+        cards = deck.takeOut(3)
         for card in cards:
             self.cards.append(card)
     
     def turn(self,deck):
-        card = deck.takeout(1)
-        self.cards.append(card)
+        card = deck.takeOut(1)
+        self.cards += (card)
     
     def river(self,deck):
         self.turn(deck)
